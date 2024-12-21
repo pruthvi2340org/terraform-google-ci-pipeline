@@ -20,5 +20,3 @@ resource "google_artifact_registry_repository" "gcp-docker-repo" {
     immutable_tags = true
   }
 }
-
-data "google_project" "project" {}

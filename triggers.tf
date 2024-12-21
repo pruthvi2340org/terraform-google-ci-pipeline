@@ -1,272 +1,94 @@
-# google_cloudbuild_trigger.default:
-resource "google_cloudbuild_trigger" "adservice" {
-    disabled       = false
-    filename       = "cloud-build/adservice.yaml"
-    ignored_files  = []
-    included_files = []
-    location       = "global"
-    name           = "${var.name}-adservice"
-    substitutions  = {}
-    tags           = []
-
-    approval_config {
-        approval_required = false
-    }
-
-    timeouts {}
-
-    trigger_template {
-        invert_regex = false
-        project_id   = var.project_id
-        repo_name    = var.repo_name
-        tag_name     = ".*"
-    }
+# Create repo connection to host
+resource "google_cloudbuildv2_repository" "github_repo" {
+  project           = var.project_id
+  location          = var.location
+  name              = var.repo_name
+  parent_connection = google_cloudbuildv2_connection.github_con.name
+  remote_uri        = var.repo_uri
 }
 
-# google_cloudbuild_trigger.default:
-resource "google_cloudbuild_trigger" "cartservice" {
-    disabled       = false
-    filename       = "cloud-build/cartservice.yaml"
-    ignored_files  = []
-    included_files = []
-    location       = "global"
-    name           = "${var.name}-cartservice"
-    substitutions  = {}
-    tags           = []
+# google_cloudbuild_trigger.push
+resource "google_cloudbuild_trigger" "push_tag_event" {
+  provider        = google-beta
+  count           = var.push_tag_event ? 1 : 0
+  disabled        = false
+  filename        = var.trigger_filename
+  ignored_files   = []
+  included_files  = []
+  location        = var.trigger_location
+  name            = var.trigger_name
+  project         = var.project_id
+  service_account = "projects/${var.project_id}/serviceAccounts/${var.service_account}"
+  substitutions   = {}
 
-    approval_config {
-        approval_required = false
+  approval_config {
+    approval_required = var.approval_required
+  }
+
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.github_repo.id
+
+    push {
+      branch       = "^main$"
+      invert_regex = false
+      tag          = ".*"
     }
-
-    timeouts {}
-
-    trigger_template {
-        invert_regex = false
-        project_id   = var.project_id
-        repo_name    = var.repo_name
-        tag_name     = ".*"
-    }
+  }
 }
 
-# google_cloudbuild_trigger.default:
-resource "google_cloudbuild_trigger" "checkoutservice" {
-    disabled       = false
-    filename       = "cloud-build/checkoutservice.yaml"
-    ignored_files  = []
-    included_files = []
-    location       = "global"
-    name           = "${var.name}-checkoutservice"
-    substitutions  = {}
-    tags           = []
+# google_cloudbuild_trigger.push
+resource "google_cloudbuild_trigger" "push_event" {
+  provider        = google-beta
+  count           = var.push_event ? 1 : 0
+  disabled        = false
+  filename        = var.trigger_filename
+  ignored_files   = []
+  included_files  = []
+  location        = var.trigger_location
+  name            = var.trigger_name
+  project         = var.project_id
+  service_account = "projects/${var.project_id}/serviceAccounts/${var.service_account}"
+  substitutions   = {}
 
-    approval_config {
-        approval_required = false
+  approval_config {
+    approval_required = var.approval_required
+  }
+
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.github_repo.id
+
+    push {
+      branch       = "^main$"
+      invert_regex = false
     }
-
-    timeouts {}
-
-    trigger_template {
-        invert_regex = false
-        project_id   = var.project_id
-        repo_name    = var.repo_name
-        tag_name     = ".*"
-    }
+  }
 }
 
-# google_cloudbuild_trigger.default:
-resource "google_cloudbuild_trigger" "currencyservice" {
-    disabled       = false
-    filename       = "cloud-build/currencyservice.yaml"
-    ignored_files  = []
-    included_files = []
-    location       = "global"
-    name           = "${var.name}-currencyservice"
-    substitutions  = {}
-    tags           = []
+# google_cloudbuild_trigger.pull_request
+resource "google_cloudbuild_trigger" "pull_request" {
+  provider        = google-beta
+  count           = var.pull_request ? 1 : 0
+  disabled        = false
+  filename        = var.trigger_filename
+  ignored_files   = []
+  included_files  = []
+  location        = var.trigger_location
+  name            = var.trigger_name
+  project         = var.project_id
+  service_account = "projects/${var.project_id}/serviceAccounts/${var.service_account}"
+  substitutions   = {}
 
-    approval_config {
-        approval_required = false
+  approval_config {
+    approval_required = var.approval_required
+  }
+
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.github_repo.id
+
+    pull_request {
+      branch          = ".*"
+      comment_control = var.comment_control
+      invert_regex    = false
     }
-
-    timeouts {}
-
-    trigger_template {
-        invert_regex = false
-        project_id   = var.project_id
-        repo_name    = var.repo_name
-        tag_name     = ".*"
-    }
-}
-
-# google_cloudbuild_trigger.default:
-resource "google_cloudbuild_trigger" "emailservice" {
-    disabled       = false
-    filename       = "cloud-build/emailservice.yaml"
-    ignored_files  = []
-    included_files = []
-    location       = "global"
-    name           = "${var.name}-emailservice"
-    substitutions  = {}
-    tags           = []
-
-    approval_config {
-        approval_required = false
-    }
-
-    timeouts {}
-
-    trigger_template {
-        invert_regex = false
-        project_id   = var.project_id
-        repo_name    = var.repo_name
-        tag_name     = ".*"
-    }
-}
-
-# google_cloudbuild_trigger.default:
-resource "google_cloudbuild_trigger" "frontend" {
-    disabled       = false
-    filename       = "cloud-build/frontend.yaml"
-    ignored_files  = []
-    included_files = []
-    location       = "global"
-    name           = "${var.name}-frontend"
-    substitutions  = {}
-    tags           = []
-
-    approval_config {
-        approval_required = false
-    }
-
-    timeouts {}
-
-    trigger_template {
-        invert_regex = false
-        project_id   = var.project_id
-        repo_name    = var.repo_name
-        tag_name     = ".*"
-    }
-}
-
-# google_cloudbuild_trigger.default:
-resource "google_cloudbuild_trigger" "loadgenerator" {
-    disabled       = false
-    filename       = "cloud-build/loadgenerator.yaml"
-    ignored_files  = []
-    included_files = []
-    location       = "global"
-    name           = "${var.name}-loadgenerator"
-    substitutions  = {}
-    tags           = []
-
-    approval_config {
-        approval_required = false
-    }
-
-    timeouts {}
-
-    trigger_template {
-        invert_regex = false
-        project_id   = var.project_id
-        repo_name    = var.repo_name
-        tag_name     = ".*"
-    }
-}
-
-# google_cloudbuild_trigger.default:
-resource "google_cloudbuild_trigger" "paymentservice" {
-    disabled       = false
-    filename       = "cloud-build/paymentservice.yaml"
-    ignored_files  = []
-    included_files = []
-    location       = "global"
-    name           = "${var.name}-paymentservice"
-    substitutions  = {}
-    tags           = []
-
-    approval_config {
-        approval_required = false
-    }
-
-    timeouts {}
-
-    trigger_template {
-        invert_regex = false
-        project_id   = var.project_id
-        repo_name    = var.repo_name
-        tag_name     = ".*"
-    }
-}
-
-# google_cloudbuild_trigger.default:
-resource "google_cloudbuild_trigger" "productcatalogservice" {
-    disabled       = false
-    filename       = "cloud-build/productcatalogservice.yaml"
-    ignored_files  = []
-    included_files = []
-    location       = "global"
-    name           = "${var.name}-productcatalogservice"
-    substitutions  = {}
-    tags           = []
-
-    approval_config {
-        approval_required = false
-    }
-
-    timeouts {}
-
-    trigger_template {
-        invert_regex = false
-        project_id   = var.project_id
-        repo_name    = var.repo_name
-        tag_name     = ".*"
-    }
-}
-
-resource "google_cloudbuild_trigger" "recommendationservice" {
-    disabled       = false
-    filename       = "cloud-build/recommendationservice.yaml"
-    ignored_files  = []
-    included_files = []
-    location       = "global"
-    name           = "${var.name}-recommendationservice"
-    substitutions  = {}
-    tags           = []
-
-    approval_config {
-        approval_required = false
-    }
-
-    timeouts {}
-
-    trigger_template {
-        invert_regex = false
-        project_id   = var.project_id
-        repo_name    = var.repo_name
-        tag_name     = ".*"
-    }
-}
-
-resource "google_cloudbuild_trigger" "shippingservice" {
-    disabled       = false
-    filename       = "cloud-build/shippingservice.yaml"
-    ignored_files  = []
-    included_files = []
-    location       = "global"
-    name           = "${var.name}-shippingservice"
-    substitutions  = {}
-    tags           = []
-
-    approval_config {
-        approval_required = false
-    }
-
-    timeouts {}
-
-    trigger_template {
-        invert_regex = false
-        project_id   = var.project_id
-        repo_name    = var.repo_name
-        tag_name     = ".*"
-    }
+  }
 }
