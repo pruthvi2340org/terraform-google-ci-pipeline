@@ -13,6 +13,7 @@ disable_trigger        = false
 approval_required      = false
 included_files         = []
 ignored_files          = []
+substitutions          = {}
 trigger_filename       = "cloud-build/adservice.yaml"
 trigger_name           = "ci-trigger"
 comment_control        = "COMMENTS_ENABLED"

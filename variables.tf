@@ -86,6 +86,11 @@ variable "included_files" {
   description = "Files to include in the Cloud Build trigger."
 }
 
+variable "substitutions" {
+  type = map
+  default = {}
+}
+
 variable "trigger_name" {
   type        = string
   description = "Name of the Cloud Build trigger."

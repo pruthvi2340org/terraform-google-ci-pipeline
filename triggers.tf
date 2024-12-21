@@ -19,7 +19,7 @@ resource "google_cloudbuild_trigger" "push_tag_event" {
   name            = var.trigger_name
   project         = var.project_id
   service_account = "projects/${var.project_id}/serviceAccounts/${var.service_account}"
-  substitutions   = {}
+  substitutions   = var.substitutions
 
   approval_config {
     approval_required = var.approval_required
@@ -48,7 +48,7 @@ resource "google_cloudbuild_trigger" "push_event" {
   name            = var.trigger_name
   project         = var.project_id
   service_account = "projects/${var.project_id}/serviceAccounts/${var.service_account}"
-  substitutions   = {}
+  substitutions   = var.substitutions
 
   approval_config {
     approval_required = var.approval_required
@@ -76,7 +76,7 @@ resource "google_cloudbuild_trigger" "pull_request" {
   name            = var.trigger_name
   project         = var.project_id
   service_account = "projects/${var.project_id}/serviceAccounts/${var.service_account}"
-  substitutions   = {}
+  substitutions   = var.substitutions
 
   approval_config {
     approval_required = var.approval_required

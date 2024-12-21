@@ -12,6 +12,9 @@ Support for github integration events
 # Release 1.0.3
 Added integration with HCP vault to retrieve and store secret in secret manager
 
+# Release 1.0.4
+Added variable substitution to cloud build trigger
+
 Pre-Requisites
 ```
 roles/cloudbuild.connectionAdmin needed for the server account or to user account
@@ -25,29 +28,29 @@ Make sure to set your token to have no expiration date and select the following 
 ```
 module "ci_pipeline" {
   source  = "./modules/ci-pipeline-setup"
-
-project_id             = ""
-name                   = ""
-location               = "us-central1"
-github_pat_secret_name = "pruthvi2340org"
-github_secret          = "<person-access-token>"
-app_installation_id    = 56484305
-connection_name        = "pruthvi2340org"
-secret_project_id      = "burner-prus"
-repo_name              = "retail-demo-app"
-repo_uri               = "https://github.com/pruthvi2340org/retail-demo-app.git"
-pull_request           = true
-service_account        = "demo-366@burner-prus.iam.gserviceaccount.com"
-disable_trigger        = false
-approval_required      = false
-included_files         = []
-ignored_files          = []
-trigger_filename       = "cloud-build/adservice.yaml"
-trigger_name           = "ci-trigger"
-comment_control        = "COMMENTS_ENABLED"
-push_event             = false
-push_tag_event         = false
-  
+  project_id             = "<project_id>"
+  name                   = "demo-app"
+  location               = "us-central1"
+  use_secret_manager     = false
+  use_vault              = true 
+  github_pat_secret_name = "org"
+  connection_name        = "org-con"
+  secret_project_id      = "<secret_project_id>"
+  repo_name              = "retail-demo-app"
+  repo_uri               = "https://github.com/<.owner_name.>/<.repo_name.>.git"
+  service_account        = "<svc-name>@<project_id>.iam.gserviceaccount.com"
+  disable_trigger        = false
+  approval_required      = false
+  included_files         = []
+  ignored_files          = []
+  substitutions          = {}
+  trigger_filename       = "cloud-build/adservice.yaml"
+  trigger_name           = "ci-trigger"
+  comment_control        = "COMMENTS_ENABLED"
+  trigger_location       = "us-central1"
+  pull_request           = false
+  push_event             = true
+  push_tag_event         = false
 }
 ```
 # If you want to use vault to retrive secret set this as environment variable
@@ -57,14 +60,7 @@ HCP_CLIENT_SECRET="..."
 ```
 # Mark use_vault to true to retrieve github pat and stores in secret manager
 ```
-use_vault = true
-```
-
-# Run the command 
-```
-#!/bin/bash
-
-source .env
-terraform plan -var="app_installation_id=$GITHUB_APP_INSTALLATION_ID" -var="github_secret=$GITHUB_PAT"
-terraform apply -var="app_installation_id=$GITHUB_APP_INSTALLATION_ID" -var="github_secret=$GITHUB_PAT"
-```
+1. "project_id" for which project the resources as to be created
+2. "name" Used to identify the resource
+3. "location" for artifacts registry and gcs bucket
+4. "repo_name" Used in the cloud build trigger which is to be External conneted cloud source repository (Github) 
