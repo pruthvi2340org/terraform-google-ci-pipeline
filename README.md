@@ -6,6 +6,12 @@ Description added with the inital requirements for CI
 # Release 1.0.1
 used to support multiple cloud builds trigger
 
+# Release 1.0.2
+Support for github integration events
+
+# Release 1.0.3
+Added integration with HCP vault to retrieve and store secret in secret manager
+
 Pre-Requisites
 ```
 roles/cloudbuild.connectionAdmin needed for the server account or to user account
@@ -44,6 +50,21 @@ push_tag_event         = false
   
 }
 ```
-1. "project_id" for which project the resources as to be created
-2. "name" Used to identify the resource
-3. "cloud_builds_list" This is the list of cloud build configurations
+# If you want to use vault to retrive secret set this as environment variable
+```
+HCP_CLIENT_ID="..."
+HCP_CLIENT_SECRET="..."
+```
+# Mark use_vault to true to retrieve github pat and stores in secret manager
+```
+use_vault = true
+```
+
+# Run the command 
+```
+#!/bin/bash
+
+source .env
+terraform plan -var="app_installation_id=$GITHUB_APP_INSTALLATION_ID" -var="github_secret=$GITHUB_PAT"
+terraform apply -var="app_installation_id=$GITHUB_APP_INSTALLATION_ID" -var="github_secret=$GITHUB_PAT"
+```

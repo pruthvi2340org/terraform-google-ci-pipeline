@@ -20,6 +20,11 @@ variable "connection_name" {
   description = "Name of the Cloud Build connection to GitHub."
 }
 
+variable "use_secret_manager" {
+  type    = bool
+  default = true
+}
+
 variable "secret_project_id" {
   type        = string
   description = "The project ID where the GitHub PAT secret will be stored."
@@ -28,6 +33,7 @@ variable "secret_project_id" {
 variable "app_installation_id" {
   type        = number
   description = "GitHub App installation ID."
+  sensitive = true
 }
 
 variable "github_pat_secret_name" {
@@ -131,6 +137,19 @@ variable "branch_regex_pattern" {
   description = "Regex pattern for branch to trigger builds on."
 }
 
+############## HCP VAULT VARIABLES ##################
+
+variable "use_vault" {
+  type    = bool
+  description = "This will retrive secret from HVP vault secret or else pass the github pat via .env file"
+  default = false
+}
+
+variable "hcp_project_id" {
+  type        = string
+  description = "To specify the project id of HCP"
+  default     = ""
+}
 
 # variable "cloud_builds_list" {
 #   type = map(object({
