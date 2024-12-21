@@ -60,7 +60,14 @@ HCP_CLIENT_SECRET="..."
 ```
 # Mark use_vault to true to retrieve github pat and stores in secret manager
 ```
-1. "project_id" for which project the resources as to be created
-2. "name" Used to identify the resource
-3. "location" for artifacts registry and gcs bucket
-4. "repo_name" Used in the cloud build trigger which is to be External conneted cloud source repository (Github) 
+use_vault = true
+```
+
+# Run the command 
+```
+#!/bin/bash
+
+source .env
+terraform plan -var="app_installation_id=$GITHUB_APP_INSTALLATION_ID" -var="github_secret=$GITHUB_PAT"
+terraform apply -var="app_installation_id=$GITHUB_APP_INSTALLATION_ID" -var="github_secret=$GITHUB_PAT"
+```
