@@ -19,7 +19,7 @@ resource "google_secret_manager_secret" "github_token_secret" {
 
 resource "google_secret_manager_secret_version" "github_token_secret_version" {
   secret      = google_secret_manager_secret.github_token_secret.id
-  secret_data = var.github_secret
+  secret_data = var.use_vault ? data.hcp_vault_secrets_secret.git_pat[0].secret_value : var.github_secret
 }
 
 data "google_iam_policy" "serviceagent_secretAccessor" {
@@ -47,5 +47,5 @@ resource "google_cloudbuildv2_connection" "github_con" {
       oauth_token_secret_version = google_secret_manager_secret_version.github_token_secret_version.id
     }
   }
-  depends_on = [google_secret_manager_secret_iam_policy.policy]
+  depends_on = [google_secret_manager_secret_version.github_token_secret_version, data.google_iam_policy.serviceagent_secretAccessor]
 }
